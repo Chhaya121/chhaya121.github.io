@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chhaya — Marketing Strategist</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0a0a0f;
+  --cream: #faf6ef;
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --rust: #b84c2e;
+  --paper: #f2ece0;
+  --line: rgba(10,10,15,0.12);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--cream); color:var(--ink); font-family:'DM Sans',sans-serif; overflow-x:hidden; cursor:none; }
+
+/* NOISE */
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:100; opacity:0.3;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+/* CURSOR */
+.cursor { position:fixed; top:0; left:0; width:12px; height:12px; background:var(--gold); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:transform .15s,background .2s; }
+.cursor-ring { position:fixed; top:0; left:0; width:36px; height:36px; border:1.5px solid var(--gold); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:transform .35s cubic-bezier(.2,.8,.3,1),opacity .2s; opacity:.6; }
+.cursor.hov { transform:translate(-50%,-50%) scale(2.5); background:var(--rust); }
+.cursor-ring.hov { transform:translate(-50%,-50%) scale(1.5); opacity:.25; }
+
+/* NAV */
+nav { position:fixed; top:0; left:0; right:0; padding:24px 60px; display:flex; justify-content:space-between; align-items:center; z-index:500; background:linear-gradient(to bottom,rgba(250,246,239,.96),transparent); backdrop-filter:blur(4px); }
+.nav-logo { font-family:'Playfair Display',serif; font-size:22px; font-weight:900; letter-spacing:-.5px; }
+.nav-logo span { color:var(--gold); }
+.nav-links { display:flex; gap:32px; list-style:none; }
+.nav-links a { cursor:pointer; font-family:'Space Mono',monospace; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; text-decoration:none; color:var(--ink); opacity:.55; transition:opacity .2s,color .2s; }
+.nav-links a:hover { opacity:1; color:var(--gold); }
+
+/* HERO */
+#hero { min-height:100vh; display:grid; grid-template-columns:1fr 1fr; position:relative; overflow:hidden; }
+.hero-left { padding:140px 60px 80px; display:flex; flex-direction:column; justify-content:center; position:relative; z-index:2; }
+.hero-tag { font-family:'Space Mono',monospace; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:24px; opacity:0; animation:fadeUp .8s .2s forwards; }
+.hero-name { font-family:'Playfair Display',serif; font-size:clamp(60px,7vw,96px); font-weight:900; line-height:.95; letter-spacing:-3px; margin-bottom:32px; opacity:0; animation:fadeUp .9s .4s forwards; }
+.hero-name em { font-style:italic; color:var(--gold); }
+.hero-desc { font-size:17px; line-height:1.7; max-width:440px; opacity:0; animation:fadeUp .9s .6s forwards; color:rgba(10,10,15,.65); }
+.hero-cta { margin-top:48px; display:flex; gap:16px; flex-wrap:wrap; opacity:0; animation:fadeUp .9s .8s forwards; }
+.btn-p { padding:14px 32px; background:var(--ink); color:var(--cream); font-family:'Space Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; text-decoration:none; border:none; cursor:pointer; transition:background .3s; display:inline-block; position:relative; z-index:10; }
+.btn-p:hover { background:var(--gold); color:var(--ink); }
+.btn-o { padding:14px 32px; background:transparent; color:var(--ink); font-family:'Space Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; text-decoration:none; border:1.5px solid var(--ink); cursor:pointer; transition:all .3s; display:inline-block; position:relative; z-index:10; }
+.btn-o:hover { background:var(--ink); color:var(--cream); }
+.hero-right { position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.hero-bg { position:absolute; inset:0; background:var(--paper); }
+.hero-bg::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 39px,var(--line) 39px,var(--line) 40px); }
+.stat-grid { position:relative; z-index:2; display:grid; grid-template-columns:1fr 1fr; gap:2px; width:380px; opacity:0; animation:fadeIn 1.2s 1s forwards; }
+.sc { background:var(--cream); padding:32px 28px; transition:transform .3s,background .3s; }
+.sc:hover { background:var(--ink); }
+.sc:hover .sn, .sc:hover .sl { color:var(--cream); }
+.sc:hover .sa { color:var(--gold); }
+.sn { font-family:'Playfair Display',serif; font-size:52px; font-weight:900; line-height:1; color:var(--ink); transition:color .3s; }
+.sa { color:var(--gold); transition:color .3s; }
+.sl { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; margin-top:8px; opacity:.55; transition:color .3s; line-height:1.4; }
+.sc-feat { grid-column:span 2; background:var(--ink); display:flex; align-items:center; justify-content:space-between; }
+.sc-feat .sn { color:var(--cream); }
+.sc-feat .sl { color:var(--cream); opacity:.45; }
+.scroll-hint { position:absolute; bottom:40px; left:60px; display:flex; align-items:center; gap:12px; opacity:0; animation:fadeIn 1s 1.5s forwards; }
+.scroll-line { width:40px; height:1px; background:var(--ink); opacity:.4; }
+.scroll-text { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:2px; opacity:.4; text-transform:uppercase; }
+
+/* MEDIA WALL */
+#media-wall { background:var(--ink); padding:44px 0; overflow:hidden; }
+.mw-label { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.28); text-align:center; margin-bottom:32px; }
+.mw-wrap { overflow:hidden; position:relative; }
+.mw-wrap::before,.mw-wrap::after { content:''; position:absolute; top:0; bottom:0; width:120px; z-index:2; pointer-events:none; }
+.mw-wrap::before { left:0; background:linear-gradient(to right,var(--ink),transparent); }
+.mw-wrap::after { right:0; background:linear-gradient(to left,var(--ink),transparent); }
+.mw-track { display:flex; animation:marquee 26s linear infinite; width:max-content; }
+.mw-track:hover { animation-play-state:paused; }
+@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.ml { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 52px; border-right:1px solid rgba(255,255,255,.06); min-width:160px; transition:background .3s; }
+.ml:hover { background:rgba(255,255,255,.04); }
+.ml-name { font-family:'Playfair Display',serif; font-size:19px; font-weight:700; color:rgba(255,255,255,.22); letter-spacing:1px; transition:color .3s; white-space:nowrap; }
+.ml:hover .ml-name { color:var(--gold); }
+.ml-sub { font-family:'Space Mono',monospace; font-size:8px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.12); margin-top:4px; transition:color .3s; }
+.ml:hover .ml-sub { color:rgba(201,168,76,.45); }
+
+/* SHARED SECTION */
+section { padding:120px 60px; }
+.stag { font-family:'Space Mono',monospace; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:16px; }
+.stit { font-family:'Playfair Display',serif; font-size:clamp(38px,5vw,62px); font-weight:900; line-height:1; letter-spacing:-2px; margin-bottom:60px; }
+.stit em { font-style:italic; color:var(--gold); }
+
+/* ABOUT */
+#about { background:var(--ink); color:var(--cream); display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+#about .stit { color:var(--cream); margin-bottom:0; }
+.about-text { font-size:17px; line-height:1.8; opacity:.72; }
+.about-text strong { color:var(--gold); opacity:1; font-weight:500; }
+.pills { display:flex; flex-wrap:wrap; gap:10px; margin-top:32px; }
+.pill { padding:8px 18px; border:1px solid rgba(255,255,255,.18); font-family:'Space Mono',monospace; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(250,246,239,.65); transition:all .3s; }
+.pill:hover { border-color:var(--gold); color:var(--gold); }
+
+/* EXPERIENCE */
+#experience { background:var(--cream); }
+.exp-wrap { max-width:900px; }
+.exp-item { display:grid; grid-template-columns:200px 1fr; gap:48px; padding:48px 0; border-bottom:1px solid var(--line); position:relative; }
+.exp-item::before { content:''; position:absolute; left:195px; top:0; bottom:0; width:1px; background:var(--line); }
+.exp-date { font-family:'Space Mono',monospace; font-size:11px; letter-spacing:1px; color:var(--gold); margin-bottom:8px; }
+.exp-co { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; line-height:1.2; margin-bottom:6px; }
+.exp-type { font-size:11px; opacity:.38; font-family:'Space Mono',monospace; letter-spacing:1px; text-transform:uppercase; }
+.exp-role { font-family:'Playfair Display',serif; font-size:28px; font-weight:700; margin-bottom:24px; letter-spacing:-.5px; }
+.exp-role span { color:var(--gold); font-style:italic; }
+.ach-list { display:grid; gap:12px; }
+.ach { display:flex; gap:14px; align-items:flex-start; padding:16px 20px; background:var(--paper); transition:background .2s; }
+.ach:hover { background:var(--ink); }
+.ach:hover .ach-t { color:var(--cream); }
+.ach:hover .ach-i { color:var(--gold); }
+.ach:hover .ach-m { color:var(--gold-light); }
+.ach-i { color:var(--gold); font-size:13px; margin-top:2px; flex-shrink:0; transition:color .2s; }
+.ach-t { font-size:14px; line-height:1.65; transition:color .2s; }
+.ach-m { font-family:'Space Mono',monospace; font-weight:700; color:var(--rust); transition:color .2s; }
+
+/* WORK SAMPLES */
+#work { background:var(--paper); }
+.work-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
+.wc { background:var(--cream); overflow:hidden; transition:transform .3s; }
+.wc:hover { transform:translateY(-5px); }
+.wc-vis { height:190px; position:relative; overflow:hidden; }
+.wc-vis svg { width:100%; height:100%; }
+.wc-body { padding:28px; }
+.wc-tag { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
+.wc-title { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; margin-bottom:12px; line-height:1.2; }
+.wc-desc { font-size:13px; line-height:1.7; opacity:.58; margin-bottom:18px; }
+.wc-metrics { display:flex; gap:20px; border-top:1px solid var(--line); padding-top:16px; flex-wrap:wrap; }
+.wcm-num { font-family:'Space Mono',monospace; font-size:17px; font-weight:700; color:var(--rust); display:block; }
+.wcm-lbl { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; opacity:.45; }
+.wc-cta { cursor:pointer; display:inline-flex; align-items:center; gap:8px; font-family:'Space Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--ink); text-decoration:none; margin-top:16px; border-bottom:1px solid var(--gold); padding-bottom:2px; transition:color .2s,gap .2s; }
+.wc-cta:hover { color:var(--gold); gap:14px; }
+
+/* IMPACT */
+#impact { background:var(--cream); text-align:center; }
+.imp-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; max-width:1000px; margin:0 auto; }
+.imp-card { background:var(--paper); padding:48px 24px; position:relative; overflow:hidden; transition:transform .3s; }
+.imp-card:hover { transform:translateY(-4px); }
+.imp-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:var(--gold); transform:scaleX(0); transition:transform .3s; }
+.imp-card:hover::after { transform:scaleX(1); }
+.imp-num { font-family:'Playfair Display',serif; font-size:54px; font-weight:900; color:var(--ink); line-height:1; margin-bottom:10px; }
+.imp-num span { color:var(--gold); }
+.imp-lbl { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; opacity:.45; line-height:1.5; }
+.imp-sub { font-size:13px; margin-top:6px; opacity:.55; }
+
+/* SKILLS */
+#skills { background:var(--paper); }
+.sk-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
+.sg { background:var(--cream); padding:40px; transition:background .3s; }
+.sg:hover { background:var(--ink); }
+.sg:hover .sg-t { color:var(--gold); }
+.sg:hover .sg-i { opacity:1; filter:none; }
+.sg:hover .sgi { color:rgba(250,246,239,.68); border-color:rgba(255,255,255,.08); }
+.sg-ico { font-size:28px; margin-bottom:16px; }
+.sg-t { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; margin-bottom:20px; transition:color .3s; }
+.sgi { font-size:14px; padding:6px 0; border-bottom:1px solid var(--line); opacity:.65; transition:color .3s,border-color .3s; }
+
+/* AWARDS */
+#awards { background:var(--ink); color:var(--cream); }
+.aw-list { max-width:800px; }
+.aw { padding:32px 0; border-bottom:1px solid rgba(255,255,255,.08); display:flex; align-items:center; gap:32px; transition:padding-left .3s; }
+.aw:hover { padding-left:16px; }
+.aw-n { font-family:'Playfair Display',serif; font-size:48px; font-weight:900; color:rgba(255,255,255,.07); min-width:70px; line-height:1; transition:color .3s; }
+.aw:hover .aw-n { color:var(--gold); opacity:.38; }
+.aw-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; margin-bottom:6px; }
+.aw-det { font-size:12px; opacity:.38; font-family:'Space Mono',monospace; letter-spacing:1px; }
+
+/* EDUCATION */
+#education { background:var(--paper); }
+.edu-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px; }
+.edu-c { padding:48px; background:var(--cream); position:relative; overflow:hidden; }
+.edu-c::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--gold); transform:scaleY(0); transition:transform .3s; transform-origin:bottom; }
+.edu-c:hover::before { transform:scaleY(1); }
+.edu-deg { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; margin-bottom:8px; line-height:1.2; }
+.edu-sch { font-size:15px; opacity:.55; margin-bottom:6px; }
+.edu-yr { font-family:'Space Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--gold); text-transform:uppercase; }
+
+/* CONTACT */
+#contact { background:var(--cream); display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+.ct-hl { font-family:'Playfair Display',serif; font-size:clamp(38px,5vw,66px); font-weight:900; line-height:.95; letter-spacing:-2px; }
+.ct-hl em { font-style:italic; color:var(--gold); }
+.ct-note { margin-top:24px; opacity:.58; font-size:15px; line-height:1.7; max-width:360px; }
+.ct-links { display:flex; flex-direction:column; gap:20px; }
+.ct-link { cursor:pointer; display:flex; align-items:center; gap:20px; text-decoration:none; color:var(--ink); padding:20px 24px; background:var(--paper); transition:background .3s,transform .2s; }
+.ct-link:hover { background:var(--ink); color:var(--cream); transform:translateX(8px); }
+.ct-icon { width:36px; height:36px; background:var(--gold); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; transition:background .3s; }
+.ct-link:hover .ct-icon { background:var(--rust); }
+.ct-lbl { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; opacity:.45; margin-bottom:2px; }
+.ct-val { font-size:15px; font-weight:500; }
+
+/* FOOTER */
+footer { background:var(--ink); color:var(--cream); padding:40px 60px; display:flex; justify-content:space-between; align-items:center; }
+.ft-name { font-family:'Playfair Display',serif; font-size:20px; font-weight:900; }
+.ft-name span { color:var(--gold); }
+.ft-note { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; opacity:.28; }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.reveal { opacity:0; transform:translateY(28px); transition:opacity .8s ease,transform .8s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* MOBILE */
+@media(max-width:900px){
+  nav{padding:20px 24px;}
+  .nav-links{display:none;}
+  section{padding:80px 24px;}
+  #hero,#about,#contact{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+  .hero-left{padding:120px 24px 60px;}
+  .imp-grid{grid-template-columns:1fr 1fr;}
+  .sk-grid,.work-grid{grid-template-columns:1fr;}
+  .exp-item{grid-template-columns:1fr;gap:16px;}
+  .exp-item::before{display:none;}
+  .edu-grid{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:12px;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="curR"></div>
+
+<nav>
+  <div class="nav-logo">C<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#about" onclick="event.preventDefault();document.getElementById('about').scrollIntoView({behavior:'smooth'});">About</a></li>
+    <li><a href="#experience" onclick="event.preventDefault();document.getElementById('experience').scrollIntoView({behavior:'smooth'});">Experience</a></li>
+    <li><a href="#work" onclick="event.preventDefault();document.getElementById('work').scrollIntoView({behavior:'smooth'});">Work</a></li>
+    <li><a href="#impact" onclick="event.preventDefault();document.getElementById('impact').scrollIntoView({behavior:'smooth'});">Impact</a></li>
+    <li><a href="#skills" onclick="event.preventDefault();document.getElementById('skills').scrollIntoView({behavior:'smooth'});">Skills</a></li>
+    <li><a href="#awards" onclick="event.preventDefault();document.getElementById('awards').scrollIntoView({behavior:'smooth'});">Awards</a></li>
+    <li><a href="#contact" onclick="event.preventDefault();document.getElementById('contact').scrollIntoView({behavior:'smooth'});">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <p class="hero-tag">Marketing Strategist &middot; Growth Leader &middot; IIM Raipur</p>
+    <h1 class="hero-name">Chhaya<br><em>Builds Brands</em><br>That Win.</h1>
+    <p class="hero-desc">MBA from IIM Raipur. 21 months driving measurable growth &mdash; from futures pricing products to 100% PR amplification. I sit at the intersection of data, narrative, and execution.</p>
+    <div class="hero-cta">
+      <a href="#work" class="btn-p" onclick="event.preventDefault();document.getElementById('work').scrollIntoView({behavior:'smooth'});">View My Work</a>
+      <a href="#contact" class="btn-o" onclick="event.preventDefault();document.getElementById('contact').scrollIntoView({behavior:'smooth'});">Get In Touch</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-bg"></div>
+    <div class="stat-grid">
+      <div class="sc"><div class="sn">25<span class="sa">%+</span></div><div class="sl">B2B Subscriber Growth</div></div>
+      <div class="sc"><div class="sn">39<span class="sa">%</span></div><div class="sl">Web Traffic Uplift</div></div>
+      <div class="sc"><div class="sn">90<span class="sa">%</span></div><div class="sl">Content Time Reduced</div></div>
+      <div class="sc"><div class="sn">2<span class="sa">&times;</span></div><div class="sl">PR Citations FY26</div></div>
+      <div class="sc sc-feat">
+        <div><div class="sn">100<span class="sa">%</span></div><div class="sl">Increase in PR Citations</div></div>
+        <div style="font-family:'Playfair Display',serif;font-size:12px;color:var(--gold);font-style:italic;text-align:right;opacity:.7;max-width:110px">ET &middot; Reuters &middot; Bloomberg &middot; Mint</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint"><div class="scroll-line"></div><span class="scroll-text">Scroll to explore</span></div>
+</section>
+
+<!-- MEDIA WALL -->
+<div id="media-wall">
+  <p class="mw-label">Featured &amp; cited in leading global publications</p>
+  <div class="mw-wrap">
+    <div class="mw-track">
+      <div class="ml"><div class="ml-name">Economic Times</div><div class="ml-sub">Business Media</div></div>
+      <div class="ml"><div class="ml-name">Reuters</div><div class="ml-sub">Global Newswire</div></div>
+      <div class="ml"><div class="ml-name">Bloomberg</div><div class="ml-sub">Financial Media</div></div>
+      <div class="ml"><div class="ml-name">Mint</div><div class="ml-sub">Business Daily</div></div>
+      <div class="ml"><div class="ml-name">Moneycontrol</div><div class="ml-sub">Financial Platform</div></div>
+      <div class="ml"><div class="ml-name">Times of India</div><div class="ml-sub">National Daily</div></div>
+      <div class="ml"><div class="ml-name">Economic Times</div><div class="ml-sub">Business Media</div></div>
+      <div class="ml"><div class="ml-name">Reuters</div><div class="ml-sub">Global Newswire</div></div>
+      <div class="ml"><div class="ml-name">Bloomberg</div><div class="ml-sub">Financial Media</div></div>
+      <div class="ml"><div class="ml-name">Mint</div><div class="ml-sub">Business Daily</div></div>
+      <div class="ml"><div class="ml-name">Moneycontrol</div><div class="ml-sub">Financial Platform</div></div>
+      <div class="ml"><div class="ml-name">Times of India</div><div class="ml-sub">National Daily</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div>
+    <p class="stag">Who I Am</p>
+    <h2 class="stit reveal">The Strategist<br>Behind the <em>Numbers</em></h2>
+  </div>
+  <div>
+    <p class="about-text reveal">I'm a <strong>B2B marketing professional</strong> who believes great marketing is equal parts <strong>analytical rigour and storytelling craft</strong>. At BigMint Technologies, I've owned GTM launches, built media partnerships from scratch, and scaled content velocity using AI &mdash; while keeping the brand voice unmistakably human.<br><br>My background in <strong>Chemistry (M.Sc.) + MBA (IIM Raipur)</strong> gave me an unusual superpower: I decode complex data narratives and translate them into market-moving stories.</p>
+    <div class="pills reveal">
+      <span class="pill">GTM Strategy</span>
+      <span class="pill">Brand Marketing</span>
+      <span class="pill">B2B Growth</span>
+      <span class="pill">Content Marketing</span>
+      <span class="pill">Media Partnerships</span>
+      <span class="pill">AI-Driven Content</span>
+      <span class="pill">SEO &amp; Digital</span>
+      <span class="pill">Demand Generation</span>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <p class="stag">Career</p>
+  <h2 class="stit reveal">Where I've <em>Created</em><br>Real Impact</h2>
+  <div class="exp-wrap">
+    <div class="exp-item reveal">
+      <div>
+        <div class="exp-date">May 2024 &ndash; Present</div>
+        <div class="exp-co">BigMint Technologies</div>
+        <div class="exp-type">Full-time &middot; 10+ mo</div>
+      </div>
+      <div>
+        <div class="exp-role">Marketing <span>Executive</span></div>
+        <div class="ach-list">
+          <div class="ach"><div class="ach-i">&#9650;</div><div class="ach-t">Commercialized futures pricing product end-to-end &mdash; leading exchange partnerships, negotiations, BRDs &amp; cross-functional delivery to launch a new revenue-generating data service.</div></div>
+          <div class="ach"><div class="ach-i">&#9650;</div><div class="ach-t">Led monetization-first GTM launch driving ARPU uplift &amp; generating <span class="ach-m">23 high-intent leads within 48 hours.</span></div></div>
+          <div class="ach"><div class="ach-i">&#9650;</div><div class="ach-t">Scaled B2B subscriber growth by <span class="ach-m">25%+</span> through ecosystem partnerships with <span class="ach-m">35+ industry associations</span> &amp; trade bodies.</div></div>
+          <div class="ach"><div class="ach-i">&#9650;</div><div class="ach-t">Owned end-to-end website revamp as a growth lever, improving navigation &amp; on-page SEO, resulting in a <span class="ach-m">39% increase</span> in average monthly traffic post-launch.</div></div>
+          <div class="ach"><div class="ach-i">&#9650;</div><div class="ach-t">Positioned BigMint as a trusted industry authority, driving a <span class="ach-m">100% increase in PR citations (FY26)</span> by onboarding ET, Reuters, Mint, Moneycontrol, TOI &amp; Bloomberg.</div></div>
+          <div class="ach"><div class="ach-i">&#9650;</div><div class="ach-t">Scaled AI-driven content &amp; video execution, reducing content turnaround time by <span class="ach-m">90%</span> while generating direct inbound leads.</div></div>
+          <div class="ach"><div class="ach-i">&#9650;</div><div class="ach-t">Drove <span class="ach-m">2&ndash;3&times; higher engagement</span> vs standard digital campaigns through webinars, industry events &amp; sponsorships.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="exp-item reveal">
+      <div>
+        <div class="exp-date">Apr &ndash; Jun 2023</div>
+        <div class="exp-co">Investosure Consultancy</div>
+        <div class="exp-type">Internship &middot; 3 mo</div>
+      </div>
+      <div>
+        <div class="exp-role">Sales &amp; Marketing <span>Intern</span></div>
+        <div class="ach-list">
+          <div class="ach"><div class="ach-i">&#9650;</div><div class="ach-t">Assisted in generating <span class="ach-m">&#8377;2.5 lakh revenue in 1 month</span>, supporting closure of 4 enterprise client deals.</div></div>
+          <div class="ach"><div class="ach-i">&#9650;</div><div class="ach-t">Contributed to strategies enabling <span class="ach-m">~10% annual B2B growth</span> through digital lead-nurturing campaigns.</div></div>
+          <div class="ach"><div class="ach-i">&#9650;</div><div class="ach-t">Reduced query resolution time by <span class="ach-m">25%</span>, expanded customer reach by <span class="ach-m">30%</span> &amp; lowered churn by <span class="ach-m">20%</span>.</div></div>
+          <div class="ach"><div class="ach-i">&#9733;</div><div class="ach-t">Recognized as <span class="ach-m">"Star Performer"</span> among 15 interns for outstanding performance.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK SAMPLES -->
+<section id="work">
+  <p class="stag">Work Samples</p>
+  <h2 class="stit reveal">Proof of <em>Execution</em></h2>
+  <div class="work-grid">
+
+    <div class="wc reveal">
+      <div class="wc-vis" style="background:#0a0a0f">
+        <svg viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="190" fill="#0a0a0f"/>
+          <polyline points="0,155 70,125 140,100 210,68 280,42 400,18" fill="none" stroke="#c9a84c" stroke-width="1.5" opacity="0.35"/>
+          <polyline points="0,170 70,165 140,155 210,130 280,95 400,55" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+          <circle cx="210" cy="68" r="5" fill="#c9a84c" opacity="0.9"/>
+          <circle cx="400" cy="18" r="6" fill="#c9a84c"/>
+          <text x="215" y="60" font-family="monospace" font-size="9" fill="rgba(201,168,76,0.7)">+ARPU</text>
+          <text x="16" y="182" font-family="monospace" font-size="8" fill="rgba(255,255,255,0.18)" letter-spacing="2">GTM LAUNCH &mdash; FUTURES PRICING PRODUCT</text>
+        </svg>
+      </div>
+      <div class="wc-body">
+        <div class="wc-tag">Go-To-Market &middot; Product Launch</div>
+        <div class="wc-title">Futures Pricing Product Commercialization</div>
+        <div class="wc-desc">Led end-to-end launch of a new revenue-generating data service &mdash; from exchange partnership negotiations and BRDs to cross-functional delivery and GTM execution.</div>
+        <div class="wc-metrics">
+          <div><span class="wcm-num">23</span><span class="wcm-lbl">Leads in 48hrs</span></div>
+          <div><span class="wcm-num">ARPU&uarr;</span><span class="wcm-lbl">Revenue Uplift</span></div>
+        </div>
+        <a href="https://www.bigmint.co/prices" target="_blank" class="wc-cta">View Live Product &rarr;</a>
+      </div>
+    </div>
+
+    <div class="wc reveal">
+      <div class="wc-vis" style="background:#131825">
+        <svg viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="190" fill="#131825"/>
+          <rect x="18" y="28" width="158" height="108" rx="3" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <rect x="18" y="28" width="158" height="16" rx="3" fill="rgba(255,255,255,0.06)"/>
+          <rect x="28" y="52" width="78" height="5" rx="2" fill="rgba(255,255,255,0.08)"/>
+          <rect x="28" y="63" width="118" height="3" rx="2" fill="rgba(255,255,255,0.05)"/>
+          <rect x="28" y="72" width="98" height="3" rx="2" fill="rgba(255,255,255,0.05)"/>
+          <rect x="28" y="90" width="58" height="20" rx="2" fill="rgba(255,255,255,0.04)"/>
+          <text x="26" y="132" font-family="monospace" font-size="7" fill="rgba(255,255,255,0.18)">BEFORE</text>
+          <text x="188" y="88" font-family="sans-serif" font-size="20" fill="#c9a84c" opacity="0.85">&rarr;</text>
+          <rect x="218" y="18" width="162" height="128" rx="3" fill="rgba(201,168,76,0.05)" stroke="rgba(201,168,76,0.28)" stroke-width="1"/>
+          <rect x="218" y="18" width="162" height="16" rx="3" fill="rgba(201,168,76,0.1)"/>
+          <rect x="228" y="44" width="100" height="7" rx="2" fill="rgba(201,168,76,0.18)"/>
+          <rect x="228" y="58" width="130" height="3" rx="2" fill="rgba(255,255,255,0.08)"/>
+          <rect x="228" y="67" width="108" height="3" rx="2" fill="rgba(255,255,255,0.08)"/>
+          <rect x="228" y="76" width="88" height="3" rx="2" fill="rgba(255,255,255,0.05)"/>
+          <rect x="228" y="92" width="75" height="26" rx="3" fill="rgba(201,168,76,0.22)"/>
+          <text x="226" y="158" font-family="monospace" font-size="7" fill="rgba(201,168,76,0.55)">AFTER &mdash; +39% TRAFFIC</text>
+        </svg>
+      </div>
+      <div class="wc-body">
+        <div class="wc-tag">Digital &middot; SEO &middot; UX</div>
+        <div class="wc-title">BigMint Website Revamp</div>
+        <div class="wc-desc">Owned the full website overhaul as a growth lever &mdash; revamping navigation architecture, messaging clarity, and on-page SEO strategy from ground up.</div>
+        <div class="wc-metrics">
+          <div><span class="wcm-num">39%</span><span class="wcm-lbl">Traffic Growth</span></div>
+          <div><span class="wcm-num">20%</span><span class="wcm-lbl">Engagement Up</span></div>
+        </div>
+        <a href="https://www.bigmint.co" target="_blank" class="wc-cta">Visit Live Website &rarr;</a>
+      </div>
+    </div>
+
+    <div class="wc reveal">
+      <div class="wc-vis" style="background:#1a0e04">
+        <svg viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="190" fill="#1a0e04"/>
+          <rect x="18" y="22" width="362" height="2" fill="rgba(201,168,76,0.45)"/>
+          <rect x="18" y="78" width="68" height="26" rx="3" fill="rgba(201,168,76,0.14)" stroke="rgba(201,168,76,0.38)" stroke-width="1"/>
+          <text x="52" y="96" font-family="serif" font-size="13" fill="rgba(201,168,76,0.9)" text-anchor="middle" font-weight="bold">ET</text>
+          <rect x="96" y="78" width="78" height="26" rx="3" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.13)" stroke-width="1"/>
+          <text x="135" y="96" font-family="sans-serif" font-size="10" fill="rgba(255,255,255,0.45)" text-anchor="middle">Reuters</text>
+          <rect x="184" y="78" width="88" height="26" rx="3" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.13)" stroke-width="1"/>
+          <text x="228" y="96" font-family="sans-serif" font-size="10" fill="rgba(255,255,255,0.45)" text-anchor="middle">Bloomberg</text>
+          <rect x="282" y="78" width="78" height="26" rx="3" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.13)" stroke-width="1"/>
+          <text x="321" y="96" font-family="sans-serif" font-size="10" fill="rgba(255,255,255,0.45)" text-anchor="middle">Mint</text>
+          <text x="200" y="148" font-family="monospace" font-size="9" fill="rgba(201,168,76,0.4)" text-anchor="middle" letter-spacing="2">100% INCREASE IN PR CITATIONS &mdash; FY26</text>
+        </svg>
+      </div>
+      <div class="wc-body">
+        <div class="wc-tag">PR &middot; Brand &middot; Media Relations</div>
+        <div class="wc-title">Media Partnership Strategy</div>
+        <div class="wc-desc">Built BigMint's media presence from scratch &mdash; onboarding ET, Reuters, Bloomberg, Mint, Moneycontrol &amp; TOI, positioning BigMint as the go-to industry data authority.</div>
+        <div class="wc-metrics">
+          <div><span class="wcm-num">100%</span><span class="wcm-lbl">PR Cite Growth</span></div>
+          <div><span class="wcm-num">6</span><span class="wcm-lbl">Major Publishers</span></div>
+        </div>
+        <a href="https://www.bigmint.co/2025/india-steel-policy-cnbc-tv18-dhruv-goel.html" target="_blank" class="wc-cta">See BigMint in the News &rarr;</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section id="impact">
+  <p class="stag">By The Numbers</p>
+  <h2 class="stit reveal">Metrics That <em>Matter</em></h2>
+  <div class="imp-grid">
+    <div class="imp-card reveal"><div class="imp-num" data-target="39" data-suffix="%">39<span>%</span></div><div class="imp-lbl">Website Traffic Growth</div><div class="imp-sub">Post SEO revamp</div></div>
+    <div class="imp-card reveal"><div class="imp-num" data-target="100" data-suffix="%">100<span>%</span></div><div class="imp-lbl">PR Citations Increase</div><div class="imp-sub">FY 2025&ndash;26</div></div>
+    <div class="imp-card reveal"><div class="imp-num" data-target="90" data-suffix="%">90<span>%</span></div><div class="imp-lbl">Content Time Reduced</div><div class="imp-sub">Via AI integration</div></div>
+    <div class="imp-card reveal"><div class="imp-num" data-target="35" data-suffix="+">35<span>+</span></div><div class="imp-lbl">Industry Partnerships</div><div class="imp-sub">Associations &amp; trade bodies</div></div>
+    <div class="imp-card reveal"><div class="imp-num" data-target="25" data-suffix="%">25<span>%</span></div><div class="imp-lbl">Subscriber Growth</div><div class="imp-sub">B2B ecosystem expansion</div></div>
+    <div class="imp-card reveal"><div class="imp-num">2&ndash;3<span>&times;</span></div><div class="imp-lbl">Event Engagement</div><div class="imp-sub">vs. standard campaigns</div></div>
+    <div class="imp-card reveal"><div class="imp-num" data-target="23">23</div><div class="imp-lbl">High-Intent Leads</div><div class="imp-sub">Within 48 hrs of GTM</div></div>
+    <div class="imp-card reveal"><div class="imp-num" data-target="20" data-suffix="%">20<span>%</span></div><div class="imp-lbl">Feature Adoption Uplift</div><div class="imp-sub">Website &amp; app platforms</div></div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <p class="stag">Capabilities</p>
+  <h2 class="stit reveal">What I <em>Bring</em><br>To The Table</h2>
+  <div class="sk-grid">
+    <div class="sg reveal">
+      <div class="sg-ico">&#128640;</div>
+      <div class="sg-t">Growth &amp; GTM</div>
+      <div class="sgi">Go-to-Market Strategy</div>
+      <div class="sgi">Product Commercialization</div>
+      <div class="sgi">ARPU &amp; Revenue Growth</div>
+      <div class="sgi">Demand Generation</div>
+      <div class="sgi">B2B Lead Nurturing</div>
+    </div>
+    <div class="sg reveal">
+      <div class="sg-ico">&#128227;</div>
+      <div class="sg-t">Brand &amp; Content</div>
+      <div class="sgi">Brand Positioning</div>
+      <div class="sgi">Media Partnership Building</div>
+      <div class="sgi">AI-Powered Content</div>
+      <div class="sgi">Editorial Strategy</div>
+      <div class="sgi">Annual Report Development</div>
+    </div>
+    <div class="sg reveal">
+      <div class="sg-ico">&#128202;</div>
+      <div class="sg-t">Digital &amp; Analytics</div>
+      <div class="sgi">SEO &amp; Web Optimization</div>
+      <div class="sgi">Funnel &amp; Conversion Analysis</div>
+      <div class="sgi">HubSpot (Certified)</div>
+      <div class="sgi">Generative AI (Certified)</div>
+      <div class="sgi">Event &amp; Webinar Marketing</div>
+    </div>
+  </div>
+</section>
+
+<!-- AWARDS -->
+<section id="awards">
+  <p class="stag" style="color:var(--gold)">Recognition</p>
+  <h2 class="stit reveal" style="color:var(--cream)">Built to <em>Compete.</em><br>Built to <em>Win.</em></h2>
+  <div class="aw-list">
+    <div class="aw reveal"><div class="aw-n">01</div><div><div class="aw-title">Ranked 1st &mdash; BigMint Shivir 1.5</div><div class="aw-det">Internal Training Program &middot; 2024</div></div></div>
+    <div class="aw reveal"><div class="aw-n">02</div><div><div class="aw-title">Winner &mdash; Detroit Case Competition</div><div class="aw-det">Top 20 B-Schools Participated &middot; IIM Raipur</div></div></div>
+    <div class="aw reveal"><div class="aw-n">03</div><div><div class="aw-title">National Semifinalist &mdash; Samsung E.D.G.E. 8.0</div><div class="aw-det">14,000+ Teams Competed Nationwide</div></div></div>
+    <div class="aw reveal"><div class="aw-n">04</div><div><div class="aw-title">Star Performer</div><div class="aw-det">Investosure Consultancy &middot; Among 15 Interns</div></div></div>
+    <div class="aw reveal"><div class="aw-n">05</div><div><div class="aw-title">Event Manager &amp; Anchor &mdash; BigMint AGM 2025</div><div class="aw-det">Annual General Meeting &middot; Full event ownership</div></div></div>
+    <div class="aw reveal"><div class="aw-n">06</div><div><div class="aw-title">Certified: Generative AI Mastermind &amp; Digital Marketing</div><div class="aw-det">Outskill &middot; HubSpot Academy</div></div></div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <p class="stag">Academic Foundation</p>
+  <h2 class="stit reveal">Where It All <em>Began</em></h2>
+  <div class="edu-grid">
+    <div class="edu-c reveal"><div class="edu-deg">Master of Business Administration</div><div class="edu-sch">Indian Institute of Management, Raipur</div><div class="edu-yr">April 2024</div></div>
+    <div class="edu-c reveal"><div class="edu-deg">Master of Science in Chemistry</div><div class="edu-sch">St. John's College, Agra</div><div class="edu-yr">July 2022</div></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div>
+    <p class="stag">Let's Connect</p>
+    <h2 class="ct-hl reveal">Ready to<br>Build <em>Something</em><br>Great?</h2>
+    <p class="ct-note reveal">Open to senior marketing roles, brand strategy positions, and growth leadership opportunities at ambitious organizations.</p>
+  </div>
+  <div class="ct-links reveal">
+    <a href="mailto:chhaya&#46;work12&#64;gmail&#46;com" class="ct-link"><div class="ct-icon">&#9993;</div><div><div class="ct-lbl">Email</div><div class="ct-val">chhaya&#46;work12&#64;gmail&#46;com</div></div></a>
+    <a href="tel:+918209727035" class="ct-link"><div class="ct-icon">&#9742;</div><div><div class="ct-lbl">Phone</div><div class="ct-val">+91 82097 27035</div></div></a>
+    <a href="https://www.linkedin.com/in/chhaya1201" target="_blank" class="ct-link"><div class="ct-icon" style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700">in</div><div><div class="ct-lbl">LinkedIn</div><div class="ct-val">linkedin.com/in/chhaya1201</div></div></a>
+    <a href="#" class="ct-link"><div class="ct-icon">&#128205;</div><div><div class="ct-lbl">Location</div><div class="ct-val">Raipur, Chhattisgarh</div></div></a>
+  </div>
+</section>
+
+<footer>
+  <div class="ft-name">Chhaya<span>.</span></div>
+  <div class="ft-note">Marketing Strategist &middot; IIM Raipur &middot; &copy; 2025</div>
+</footer>
+
+<script>
+// CURSOR
+const cur = document.getElementById('cur');
+const curR = document.getElementById('curR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+});
+(function anim(){
+  rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
+  curR.style.left=rx+'px'; curR.style.top=ry+'px';
+  requestAnimationFrame(anim);
+})();
+document.querySelectorAll('a,button,.sc,.imp-card,.sg,.ach,.aw,.wc').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.classList.add('hov');curR.classList.add('hov');});
+  el.addEventListener('mouseleave',()=>{cur.classList.remove('hov');curR.classList.remove('hov');});
+});
+
+// SCROLL REVEAL
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const siblings = Array.from(e.target.parentElement.children);
+      const idx = siblings.indexOf(e.target);
+      setTimeout(()=>e.target.classList.add('visible'), idx * 80);
+      obs.unobserve(e.target);
+    }
+  });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// COUNT UP
+function countUp(el, target, suffix){
+  let v=0; const step=target/55;
+  const t=setInterval(()=>{
+    v+=step;
+    if(v>=target){v=target;clearInterval(t);}
+    const inner = Math.round(v) + (suffix ? '<span>'+suffix+'</span>' : '');
+    el.innerHTML=inner;
+  },16);
+}
+const impObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.imp-num[data-target]').forEach(el=>{
+        if(!el.dataset.done){
+          el.dataset.done='1';
+          const t=parseInt(el.dataset.target);
+        
+          setTimeout(()=>countUp(el,t,s), 100);
+        }
+      });
+        impObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.2});
+const impSec=document.getElementById('impact');
+if(impSec) impObs.observe(impSec);
+</script>
+</body>
+</html>
